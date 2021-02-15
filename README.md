@@ -69,61 +69,61 @@ Compatible with docker-compose v2 schemas.
 ---
 version: "2.1"
 services:
-	swag:
-		image: ghcr.io/linuxserver/swag
-		container_name: swag
-		cap_add:
-			- NET_ADMIN
-		environment:
-			- PUID=1000
-			- PGID=1000
-			- TZ=Europe/London
-			- URL=yourdomain.url
-			- SUBDOMAINS=www,
-			- VALIDATION=http
-			- CERTPROVIDER= #optional
-			- DNSPLUGIN=cloudflare #optional
-			- PROPAGATION= #optional
-			- DUCKDNSTOKEN= #optional
-			- EMAIL= #optional
-			- ONLY_SUBDOMAINS=false #optional
-			- EXTRA_DOMAINS= #optional
-			- STAGING=false #optional
-			- MAXMINDDB_LICENSE_KEY= #optional
-		volumes:
-			- /path/to/appdata/config:/config
-		ports:
-			- 443:443
-			- 80:80 #optional
-		restart: unless-stopped
+  swag:
+    image: ghcr.io/linuxserver/swag
+    container_name: swag
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+      - URL=yourdomain.url
+      - SUBDOMAINS=www,
+      - VALIDATION=http
+      - CERTPROVIDER= #optional
+      - DNSPLUGIN=cloudflare #optional
+      - PROPAGATION= #optional
+      - DUCKDNSTOKEN= #optional
+      - EMAIL= #optional
+      - ONLY_SUBDOMAINS=false #optional
+      - EXTRA_DOMAINS= #optional
+      - STAGING=false #optional
+      - MAXMINDDB_LICENSE_KEY= #optional
+    volumes:
+      - /path/to/appdata/config:/config
+    ports:
+      - 443:443
+      - 80:80 #optional
+    restart: unless-stopped
 ```
 
 ### docker cli
 
 ```
 docker run -d \
-	--name=swag \
-	--cap-add=NET_ADMIN \
-	-e PUID=1000 \
-	-e PGID=1000 \
-	-e TZ=Europe/London \
-	-e URL=yourdomain.url \
-	-e SUBDOMAINS=www, \
-	-e VALIDATION=http \
-	-e CERTPROVIDER= `#optional` \
-	-e DNSPLUGIN=cloudflare `#optional` \
-	-e PROPAGATION= `#optional` \
-	-e DUCKDNSTOKEN= `#optional` \
-	-e EMAIL= `#optional` \
-	-e ONLY_SUBDOMAINS=false `#optional` \
-	-e EXTRA_DOMAINS= `#optional` \
-	-e STAGING=false `#optional` \
-	-e MAXMINDDB_LICENSE_KEY= `#optional` \
-	-p 443:443 \
-	-p 80:80 `#optional` \
-	-v /path/to/appdata/config:/config \
-	--restart unless-stopped \
-	ghcr.io/linuxserver/swag
+  --name=swag \
+  --cap-add=NET_ADMIN \
+  -e PUID=1000 \
+  -e PGID=1000 \
+  -e TZ=Europe/London \
+  -e URL=yourdomain.url \
+  -e SUBDOMAINS=www, \
+  -e VALIDATION=http \
+  -e CERTPROVIDER= `#optional` \
+  -e DNSPLUGIN=cloudflare `#optional` \
+  -e PROPAGATION= `#optional` \
+  -e DUCKDNSTOKEN= `#optional` \
+  -e EMAIL= `#optional` \
+  -e ONLY_SUBDOMAINS=false `#optional` \
+  -e EXTRA_DOMAINS= `#optional` \
+  -e STAGING=false `#optional` \
+  -e MAXMINDDB_LICENSE_KEY= `#optional` \
+  -p 443:443 \
+  -p 80:80 `#optional` \
+  -v /path/to/appdata/config:/config \
+  --restart unless-stopped \
+  ghcr.io/linuxserver/swag
 ```
 
 
@@ -178,8 +178,8 @@ Ensure any volume directories on the host are owned by the same user you specify
 In this instance `PUID=1000` and `PGID=1000`, to find yours use `id user` as below:
 
 ```
-	$ id username
-		uid=1000(dockeruser) gid=1000(dockergroup) groups=1000(dockergroup)
+  $ id username
+    uid=1000(dockeruser) gid=1000(dockergroup) groups=1000(dockergroup)
 ```
 
 
@@ -200,14 +200,14 @@ In this instance `PUID=1000` and `PGID=1000`, to find yours use `id user` as bel
 * Before running this container, make sure that the url and subdomains are properly forwarded to this container's host, and that port 443 (and/or 80) is not being used by another service on the host (NAS gui, another webserver, etc.).
 * For `http` validation, port 80 on the internet side of the router should be forwarded to this container's port 80
 * For `dns` validation, make sure to enter your credentials into the corresponding ini (or json for some plugins) file under `/config/dns-conf`
-	* Cloudflare provides free accounts for managing dns and is very easy to use with this image. Make sure that it is set up for "dns only" instead of "dns + proxy"
-	* Google dns plugin is meant to be used with "Google Cloud DNS", a paid enterprise product, and not for "Google Domains DNS"
+  * Cloudflare provides free accounts for managing dns and is very easy to use with this image. Make sure that it is set up for "dns only" instead of "dns + proxy"
+  * Google dns plugin is meant to be used with "Google Cloud DNS", a paid enterprise product, and not for "Google Domains DNS"
 * For `duckdns` validation, either leave the `SUBDOMAINS` variable empty or set it to `wildcard`, and set the `DUCKDNSTOKEN` variable with your duckdns token. Due to a limitation of duckdns, the resulting cert will only cover either main subdomain (ie. `yoursubdomain.duckdns.org`), or sub-subdomains (ie. `*.yoursubdomain.duckdns.org`), but will not both at the same time. You can use our [duckdns image](https://hub.docker.com/r/linuxserver/duckdns/) to update your IP on duckdns.org.
 * `--cap-add=NET_ADMIN` is required for fail2ban to modify iptables
 * If you need a dynamic dns provider, you can use the free provider duckdns.org where the `URL` will be `yoursubdomain.duckdns.org` and the `SUBDOMAINS` can be `www,ftp,cloud` with http validation, or `wildcard` with dns validation.
 * After setup, navigate to `https://yourdomain.url` to access the default homepage (http access through port 80 is disabled by default, you can enable it by editing the default site config at `/config/nginx/site-confs/default`).
 * Certs are checked nightly and if expiration is within 30 days, renewal is attempted. If your cert is about to expire in less than 30 days, check the logs under `/config/log/letsencrypt` to see why the renewals have been failing. It is recommended to input your e-mail in docker parameters so you receive expiration notices from Let's Encrypt in those circumstances.
-* It's possible to add additional renewal hooks at `/config/renewal-hooks/*` they are executed in sorted order.
+
 ### Security and password protection
 * The container detects changes to url and subdomains, revokes existing certs and generates new ones during start.
 * The container provides a pre-generated 4096-bit dhparams.pem (rotated weekly via [Jenkins job](https://ci.linuxserver.io/blue/organizations/jenkins/Xtras-Builders-Etc%2Fdhparams-uploader/activity)) for new instances, however you may generate your own by running `docker exec swag openssl dhparam -out /config/nginx/dhparams.pem 4096` WARNING: This takes a very long time
@@ -223,19 +223,19 @@ This will *ask* Google et al not to index and list your site. Be careful with th
 * If you wish to redirect http to https, you must expose port 80
 ### Using certs in other containers
 * This container includes auto-generated pfx and private-fullchain-bundle pem certs that are needed by other apps like Emby and Znc.
-	* To use these certs in other containers, do either of the following:
-	1. *(Easier)* Mount the container's config folder in other containers (ie. `-v /path-to-le-config:/le-ssl`) and in the other containers, use the cert location `/le-ssl/keys/letsencrypt/`
-	2. *(More secure)* Mount the SWAG folder `etc` that resides under `/config` in other containers (ie. `-v /path-to-le-config/etc:/le-ssl`) and in the other containers, use the cert location `/le-ssl/letsencrypt/live/<your.domain.url>/` (This is more secure because the first method shares the entire SWAG config folder with other containers, including the www files, whereas the second method only shares the ssl certs)
-	* These certs include:
-	1. `cert.pem`, `chain.pem`, `fullchain.pem` and `privkey.pem`, which are generated by Certbot and used by nginx and various other apps
-	2. `privkey.pfx`, a format supported by Microsoft and commonly used by dotnet apps such as Emby Server (no password)
-	3. `priv-fullchain-bundle.pem`, a pem cert that bundles the private key and the fullchain, used by apps like ZNC
+  * To use these certs in other containers, do either of the following:
+  1. *(Easier)* Mount the container's config folder in other containers (ie. `-v /path-to-le-config:/le-ssl`) and in the other containers, use the cert location `/le-ssl/keys/letsencrypt/`
+  2. *(More secure)* Mount the SWAG folder `etc` that resides under `/config` in other containers (ie. `-v /path-to-le-config/etc:/le-ssl`) and in the other containers, use the cert location `/le-ssl/letsencrypt/live/<your.domain.url>/` (This is more secure because the first method shares the entire SWAG config folder with other containers, including the www files, whereas the second method only shares the ssl certs)
+  * These certs include:
+  1. `cert.pem`, `chain.pem`, `fullchain.pem` and `privkey.pem`, which are generated by Certbot and used by nginx and various other apps
+  2. `privkey.pfx`, a format supported by Microsoft and commonly used by dotnet apps such as Emby Server (no password)
+  3. `priv-fullchain-bundle.pem`, a pem cert that bundles the private key and the fullchain, used by apps like ZNC
 ### Using fail2ban
 * This container includes fail2ban set up with 4 jails by default:
-	1. nginx-http-auth
-	2. nginx-badbots
-	3. nginx-botsearch
-	4. nginx-deny
+  1. nginx-http-auth
+  2. nginx-badbots
+  3. nginx-botsearch
+  4. nginx-deny
 * To enable or disable other jails, modify the file `/config/fail2ban/jail.local`
 * To modify filters and actions, instead of editing the `.conf` files, create `.local` files with the same name and edit those because .conf files get overwritten when the actions and filters are updated. `.local` files will append whatever's in the `.conf` files (ie. `nginx-http-auth.conf` --> `nginx-http-auth.local`)
 * You can check which jails are active via `docker exec -it swag fail2ban-client status`
@@ -246,11 +246,11 @@ This will *ask* Google et al not to index and list your site. Be careful with th
 * This container creates a number of configs for nginx, proxy samples, etc.
 * Config updates are noted in the changelog but not automatically applied to your files.
 * If you have modified a file with noted changes in the changelog:
-	1. Keep your existing configs as is (not broken, don't fix)
-	2. Review our repository commits and apply the new changes yourself
-	3. Delete the modified config file with listed updates, restart the container, reapply your changes
+  1. Keep your existing configs as is (not broken, don't fix)
+  2. Review our repository commits and apply the new changes yourself
+  3. Delete the modified config file with listed updates, restart the container, reapply your changes
 * If you have NOT modified a file with noted changes in the changelog:
-	1. Delete the config file with listed updates, restart the container
+  1. Delete the config file with listed updates, restart the container
 * Proxy sample updates are not listed in the changelog. See the changes here: [https://github.com/linuxserver/reverse-proxy-confs/commits/master](https://github.com/linuxserver/reverse-proxy-confs/commits/master)
 * Proxy sample files WILL be updated, however your renamed (enabled) proxy files will not.
 * You can check the new sample and adjust your active config as needed.
@@ -267,9 +267,9 @@ We publish various [Docker Mods](https://github.com/linuxserver/docker-mods) to 
 * Shell access whilst the container is running: `docker exec -it swag /bin/bash`
 * To monitor the logs of the container in realtime: `docker logs -f swag`
 * container version number
-	* `docker inspect -f '{{ index .Config.Labels "build_version" }}' swag`
+  * `docker inspect -f '{{ index .Config.Labels "build_version" }}' swag`
 * image version number
-	* `docker inspect -f '{{ index .Config.Labels "build_version" }}' ghcr.io/linuxserver/swag`
+  * `docker inspect -f '{{ index .Config.Labels "build_version" }}' ghcr.io/linuxserver/swag`
 
 ## Updating Info
 
@@ -279,9 +279,9 @@ Below are the instructions for updating containers:
 
 ### Via Docker Compose
 * Update all images: `docker-compose pull`
-	* or update a single image: `docker-compose pull swag`
+  * or update a single image: `docker-compose pull swag`
 * Let compose update all containers as necessary: `docker-compose up -d`
-	* or update a single container: `docker-compose up -d swag`
+  * or update a single container: `docker-compose up -d swag`
 * You can also remove the old dangling images: `docker image prune`
 
 ### Via Docker Run
@@ -293,12 +293,12 @@ Below are the instructions for updating containers:
 
 ### Via Watchtower auto-updater (only use if you don't remember the original parameters)
 * Pull the latest image at its tag and replace it with the same env variables in one run:
-	```
-	docker run --rm \
-	-v /var/run/docker.sock:/var/run/docker.sock \
-	containrrr/watchtower \
-	--run-once swag
-	```
+  ```
+  docker run --rm \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  containrrr/watchtower \
+  --run-once swag
+  ```
 * You can also remove the old dangling images: `docker image prune`
 
 **Note:** We do not endorse the use of Watchtower as a solution to automated updates of existing Docker containers. In fact we generally discourage automated updates. However, this is a useful tool for one-time manual updates of containers where you have forgotten the original parameters. In the long term, we highly recommend using [Docker Compose](https://docs.linuxserver.io/general/docker-compose).
@@ -313,9 +313,9 @@ If you want to make local modifications to these images for development purposes
 git clone https://github.com/linuxserver/docker-swag.git
 cd docker-swag
 docker build \
-	--no-cache \
-	--pull \
-	-t ghcr.io/linuxserver/swag:latest .
+  --no-cache \
+  --pull \
+  -t ghcr.io/linuxserver/swag:latest .
 ```
 
 The ARM variants can be built on x86_64 hardware using `multiarch/qemu-user-static`

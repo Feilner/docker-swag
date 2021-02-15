@@ -7,4 +7,5 @@ echo
 echo "<------------------------------------------------->"
 echo "cronjob running on "$(date)
 echo "Running certbot renew"
-certbot -n renew 
+certbot -n renew
+ 
